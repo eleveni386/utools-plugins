@@ -1,0 +1,12 @@
+{
+  "main": "index.html",
+  "logo": "logo.png",
+  "preload": "preload.js",
+  "features": [
+    {
+      "code": "hello",
+      "explain": "hello world",
+      "cmds": ["virscan", "病毒检测", "病毒", "vir"]
+    }
+  ]
+}
