@@ -195,7 +195,7 @@ layui.use(['upload', 'element', 'layer', 'table'], function(){
     done: function(res){
       if ( res.code == 0 ){
         layer.close(layer.index);
-        $('#av-drag').hide();
+        $('#av-window').hide();
         show_result(res.data.sha256);
         T = setInterval(show_result, 3000, res.data.sha256);
       } else {
