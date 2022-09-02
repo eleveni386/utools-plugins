@@ -1,3 +1,4 @@
+var imgconver = {};
 layui.use(['upload', 'element', 'layer', 'table'], function(){
   var $ = layui.jquery;
   var upload = layui.upload;
@@ -32,6 +33,7 @@ layui.use(['upload', 'element', 'layer', 'table'], function(){
     return acct;
   }
 
+
   function read_db(){
     var db = localStorage.getItem('read_db');
 
@@ -65,8 +67,8 @@ layui.use(['upload', 'element', 'layer', 'table'], function(){
     var m_body = "";
     var m_attac = [];
     var title = "";
-    var imgconver = {};
     var reg= new RegExp('cid:[A-Z0-9]+\-[A-Z0-9]+\-[A-Z0-9]+\-[A-Z0-9]+\-[A-Z0-9]+','g');
+    var href_reg = new RegExp('\<a\ href', 'g');
 
     if (layEvent == "detail"){
       title += "from: <span>"+data.headers.from+"</span>&nbsp;";
@@ -77,7 +79,8 @@ layui.use(['upload', 'element', 'layer', 'table'], function(){
       if (data.hasOwnProperty('attachments')){
         data.attachments.forEach(function(d){
           imgconver[d.contentId] = 'https://www.snapmail.cc/email/'+data.id+'/attachment/'+d.fileName;
-          m_attac.push('<a href="https://www.snapmail.cc/email/'+data.id+'/attachment/'+d.fileName+'">'+d.fileName+'</a>');
+          f = '<span id="'+d.contentId+'" onclick="downfile(this)">'+d.fileName+'</span>';
+          m_attac.push(f);
         })
       };
 
@@ -94,6 +97,8 @@ layui.use(['upload', 'element', 'layer', 'table'], function(){
             }
           })
         }
+
+        m_body = m_body.replace('<a href', '<a onclick="window.openfile(this.href)" href');
 
       } else {
         m_body = data.text
@@ -137,7 +142,6 @@ layui.use(['upload', 'element', 'layer', 'table'], function(){
         elem: '#maillist',
         url: 'https://www.snapmail.cc/emailList/' + gen_account(),
         skin: 'line',
-        //data: d.data,
         page: true,
         limits: [50,100],
         loading:true,
@@ -170,33 +174,20 @@ layui.use(['upload', 'element', 'layer', 'table'], function(){
           }
         },
         error: function(xhr, err){
-          $('.layui-none')[0].innerText = '还没有收到邮件哦, 多次刷新间隔不要小于10s';
+          $('.layui-none')[0].innerText = '还没有收到邮件哦';
         }
       });
     }
 
     load_table('x');
-
-//    layer.load();
-//    $.ajax({
-//      type: 'GET',
-//      url: 'https://www.snapmail.cc/emailList/' + gen_account(),
-//      dataType: 'json',
-//      success: function(res){
-//        console.log(res);
-//        _t = {
-//          'code': 0, 'count': res.length, 'data': res
-//        };
-//      },
-//      complete:function(xhr, resp){
-//        load_table(_t);
-//        layer.closeAll('loading');
-//      }
-//    })
   }
 
   gen_account();
   fresh_list();
   $('#refresh').click(function(){fresh_list()});
-
 });
+
+function downfile(f){
+  window.openfile(imgconver[f.id]);
+}
+
